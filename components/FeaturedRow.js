@@ -1,9 +1,34 @@
 import { View, Text, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowSmallRightIcon } from "react-native-heroicons/outline";
 import RestaurantCard from "./RestaurantCard";
+import sanityClient from "../sanity";
 
 const FeaturedRow = ({ id, title, description }) => {
+  const [restaurants, setRestaurants] = useState([]);
+
+  useEffect(() => {
+    sanityClient
+      .fetch(
+        `
+    *[_type == "featured" && _id == $id] {
+      ...,
+      restaurants[]->{
+        ...,
+        dishes[]->,
+        type-> {
+          name
+        }
+      }
+    }[0]
+    `,
+        { id }
+      )
+      .then((data) => {
+        setRestaurants(data?.restaurants);
+      });
+  }, []);
+
   return (
     <View>
       <View className="mt-4 flex-row items-center justify-between px-4">
@@ -18,43 +43,21 @@ const FeaturedRow = ({ id, title, description }) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 15 }}
       >
-        {/*RESTAURANT CARDS */}
-        <RestaurantCard
-          id="123"
-          imgUrl={"https://images.deliveryhero.io/image/fd-tr/LH/njhw-hero.jpg"}
-          title="Copernic Pizza"
-          rating="4.7"
-          genre="Italian"
-          address="gungoren"
-          shortDes="Test"
-          dishes={[]}
-          long={25.6}
-          lat={20}
-        />
-        <RestaurantCard
-          id="123"
-          imgUrl={"https://images.deliveryhero.io/image/fd-tr/LH/njhw-hero.jpg"}
-          title="Copernic Pizza"
-          rating="4.7"
-          genre="Italian"
-          address="gungoren"
-          shortDes="Test"
-          dishes={[]}
-          long={25.6}
-          lat={20}
-        />
-        <RestaurantCard
-          id="123"
-          imgUrl={"https://images.deliveryhero.io/image/fd-tr/LH/njhw-hero.jpg"}
-          title="Copernic Pizza"
-          rating="4.7"
-          genre="Italian"
-          address="gungoren"
-          shortDes="Test"
-          dishes={[]}
-          long={25.6}
-          lat={20}
-        />
+        {restaurants?.map((restaurant) => (
+          <RestaurantCard
+            key={restaurant._id}
+            id={restaurant._id}
+            imgUrl={restaurant.image}
+            title={restaurant.name}
+            rating={restaurant.rating}
+            genre={restaurant.type?.name}
+            address={restaurant.address}
+            dishes={restaurant.dishes}
+            shortDes={restaurant.short_description}
+            long={restaurant.long}
+            lat={restaurant.lat}
+          />
+        ))}
       </ScrollView>
     </View>
   );
