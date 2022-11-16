@@ -1,15 +1,7 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-  Platform,
-  StatusBar,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { selectRestaurant } from "../slices/restaurantSlice";
 import {
   selectBasketItems,
@@ -38,12 +30,7 @@ const BasketScreen = () => {
   }, [items]);
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-white"
-      style={{
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
+    <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 bg-gray-100">
         <View className="p-5 border-b border-[#00CCBB] bg-white shadow-xs">
           <View>
@@ -115,7 +102,10 @@ const BasketScreen = () => {
             <Text className="font-extrabold">{basketTotal + 5} ₺</Text>
           </View>
 
-          <TouchableOpacity className="rounded-lg bg-[#00CCBB] p-4">
+          <TouchableOpacity
+            className="rounded-lg bg-[#00CCBB] p-4"
+            onPress={() => navigation.navigate("PreparingOrderScreen")}
+          >
             <Text className="text-center text-white text-lg font-bold">
               Place Order
             </Text>

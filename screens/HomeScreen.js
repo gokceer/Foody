@@ -1,15 +1,7 @@
-import {
-  Text,
-  SafeAreaView,
-  Platform,
-  StatusBar,
-  View,
-  Image,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { Text, View, Image, TextInput, ScrollView } from "react-native";
 import React, { useLayoutEffect, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   AdjustmentsVerticalIcon,
   ChevronDownIcon,
@@ -58,12 +50,7 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-white pt-5"
-      style={{
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
+    <SafeAreaView className="flex-1 bg-white pt-5">
       {/* HEADER */}
       <View className="flex-row pb-3 items-center mx-2 space-x-2 px-1">
         <Image
